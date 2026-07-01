@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SHL AI Assessment Recommendation Platform — intelligent conversational assessment discovery powered by LangGraph and hybrid retrieval.">
+    <title>SHL Assessment Intelligence — AI Discovery Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app/styles.css">
+</head>
+<body>
+    <!-- ═══ Navigation ═══ -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-brand">
+                <div class="nav-logo">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect width="28" height="28" rx="7" fill="url(#logo-grad)"/>
+                        <path d="M8 14l4 4 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28">
+                                <stop stop-color="#6366f1"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="nav-title">SHL Assessment Intelligence</span>
+            </a>
+            <div class="nav-links">
+                <a href="#chat" class="nav-link active" data-page="chat">Chat</a>
+                <a href="#explorer" class="nav-link" data-page="explorer">Explorer</a>
+                <a href="#eval" class="nav-link" data-page="eval">Evaluation</a>
+                <a href="#dev" class="nav-link" data-page="dev">Developer</a>
+            </div>
+            <div class="nav-actions">
+                <div class="status-indicator" id="status-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ Main Content ═══ -->
+    <main class="main">
+        <!-- ── Chat Page ── -->
+        <section class="page page-active" id="page-chat">
+            <div class="chat-layout">
+                <!-- Chat Panel -->
+                <div class="chat-panel">
+                    <div class="chat-header">
+                        <div class="chat-header-info">
+                            <h1 class="chat-title">Assessment Discovery</h1>
+                            <p class="chat-subtitle">Describe your hiring needs and I'll recommend the right SHL assessments</p>
+                        </div>
+                        <button class="btn-icon" id="btn-new-chat" title="New conversation">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-welcome">
+                            <div class="welcome-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <circle cx="24" cy="24" r="23" stroke="url(#welcome-grad)" stroke-width="2" opacity="0.3"/>
+                                    <circle cx="24" cy="24" r="16" stroke="url(#welcome-grad)" stroke-width="2" opacity="0.5"/>
+                                    <circle cx="24" cy="24" r="8" fill="url(#welcome-grad)" opacity="0.8"/>
+                                    <defs>
+                                        <linearGradient id="welcome-grad" x1="0" y1="0" x2="48" y2="48">
+                                            <stop stop-color="#6366f1"/>
+                                            <stop offset="1" stop-color="#a78bfa"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h2>What role are you hiring for?</h2>
+                            <p>I'll help you find the right SHL assessments through conversation — clarifying requirements, comparing options, and building a grounded shortlist.</p>
+                            <div class="welcome-examples">
+                                <button class="example-chip" data-example="I'm hiring a senior Java developer who will work with Spring and AWS">Senior Java Developer</button>
+                                <button class="example-chip" data-example="We need to screen 500 entry-level contact centre agents for English US calls">Contact Centre Screening</button>
+                                <button class="example-chip" data-example="We need a solution for senior leadership — CXOs, directors with 15+ years experience">Executive Leadership</button>
+                                <button class="example-chip" data-example="Hiring graduate financial analysts — need numerical reasoning and finance knowledge tests">Graduate Financial Analysts</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="context-bar" id="context-bar" style="display:none">
+                            <div class="context-pills" id="context-pills"></div>
+                        </div>
+                        <div class="input-wrapper">
+                            <textarea class="chat-input" id="chat-input" placeholder="Describe the role you're hiring for..." rows="1"></textarea>
+                            <button class="btn-send" id="btn-send" disabled>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            </button>
+                        </div>
+                        <div class="input-footer">
+                            <span class="turn-counter" id="turn-counter">Turn 0/8</span>
+                            <span class="powered-by">Powered by LangGraph + Hybrid Retrieval + Gemini</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reasoning Panel -->
+                <div class="reasoning-panel" id="reasoning-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                            Reasoning
+                        </h3>
+                    </div>
+                    <div class="panel-content" id="reasoning-content">
+                        <div class="reasoning-empty">
+                            <p>Start a conversation to see the agent's reasoning process, detected context, and retrieval pipeline.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Explorer Page ── -->
+        <section class="page" id="page-explorer">
+            <div class="explorer-layout">
+                <div class="explorer-header">
+                    <h1>Assessment Catalog</h1>
+                    <p>Browse all 377 SHL assessments with filtering and search</p>
+                    <div class="explorer-controls">
+                        <input type="text" class="search-input" id="explorer-search" placeholder="Search assessments...">
+                        <div class="filter-group">
+                            <select class="filter-select" id="filter-type">
+                                <option value="">All Types</option>
+                                <option value="Knowledge & Skills">Knowledge & Skills</option>
+                                <option value="Personality & Behavior">Personality & Behavior</option>
+                                <option value="Ability & Aptitude">Ability & Aptitude</option>
+                                <option value="Simulations">Simulations</option>
+                                <option value="Biodata & Situational Judgment">Biodata & SJT</option>
+                                <option value="Competencies">Competencies</option>
+                                <option value="Development & 360">Development & 360</option>
+                            </select>
+                            <select class="filter-select" id="filter-level">
+                                <option value="">All Levels</option>
+                                <option value="Entry-Level">Entry-Level</option>
+                                <option value="Graduate">Graduate</option>
+                                <option value="Mid-Professional">Mid-Professional</option>
+                                <option value="Professional Individual Contributor">Professional IC</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Director">Director</option>
+                                <option value="Executive">Executive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="explorer-stats" id="explorer-stats">Loading catalog...</div>
+                </div>
+                <div class="explorer-grid" id="explorer-grid"></div>
+            </div>
+        </section>
+
+        <!-- ── Evaluation Page ── -->
+        <section class="page" id="page-eval">
+            <div class="eval-layout">
+                <div class="eval-header">
+                    <h1>Evaluation Dashboard</h1>
+                    <p>Replay conversation traces, measure Recall@10, and validate behavior probes</p>
+                </div>
+                <div class="eval-grid">
+                    <div class="eval-card metric-card">
+                        <div class="metric-label">Mean Recall@10</div>
+                        <div class="metric-value" id="metric-recall">—</div>
+                        <div class="metric-bar"><div class="metric-fill" id="recall-fill"></div></div>
+                    </div>
+                    <div class="eval-card metric-card">
+                        <div class="metric-label">Schema Compliance</div>
+                        <div class="metric-value" id="metric-schema">—</div>
+                        <div class="metric-bar"><div class="metric-fill" id="schema-fill"></div></div>
+                    </div>
+                    <div class="eval-card metric-card">
+                        <div class="metric-label">Behavior Probes</div>
+                        <div class="metric-value" id="metric-probes">—</div>
+                        <div class="metric-bar"><div class="metric-fill" id="probes-fill"></div></div>
+                    </div>
+                    <div class="eval-card metric-card">
+                        <div class="metric-label">Avg Latency</div>
+                        <div class="metric-value" id="metric-latency">—</div>
+                        <div class="metric-bar"><div class="metric-fill" id="latency-fill"></div></div>
+                    </div>
+                </div>
+                <div class="eval-traces" id="eval-traces">
+                    <h2>Conversation Traces</h2>
+                    <p class="eval-instruction">Click "Run All" to replay all 10 conversation traces against the API.</p>
+                    <button class="btn-primary" id="btn-run-eval">Run All Traces</button>
+                    <div class="trace-results" id="trace-results"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Developer Page ── -->
+        <section class="page" id="page-dev">
+            <div class="dev-layout">
+                <div class="dev-header">
+                    <h1>Developer Console</h1>
+                    <p>Live API inspector, retrieval pipeline, and agent execution trace</p>
+                </div>
+                <div class="dev-grid">
+                    <div class="dev-card">
+                        <h3>API Log</h3>
+                        <div class="code-viewer" id="api-log">
+                            <pre><code>// API requests and responses will appear here</code></pre>
+                        </div>
+                    </div>
+                    <div class="dev-card">
+                        <h3>Agent Pipeline</h3>
+                        <div class="pipeline-viewer" id="pipeline-viewer">
+                            <div class="pipeline-stage">
+                                <div class="stage-node">Reconstruct</div>
+                                <div class="stage-arrow">→</div>
+                                <div class="stage-node">Route Intent</div>
+                                <div class="stage-arrow">→</div>
+                                <div class="stage-node">Retrieve</div>
+                                <div class="stage-arrow">→</div>
+                                <div class="stage-node">Recommend</div>
+                                <div class="stage-arrow">→</div>
+                                <div class="stage-node">Verify</div>
+                                <div class="stage-arrow">→</div>
+                                <div class="stage-node">Output</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dev-card">
+                        <h3>Architecture</h3>
+                        <div class="arch-diagram">
+                            <div class="arch-layer">
+                                <span class="arch-label">Frontend</span>
+                                <div class="arch-components">
+                                    <span class="arch-chip">Chat UI</span>
+                                    <span class="arch-chip">Explorer</span>
+                                    <span class="arch-chip">Eval Dashboard</span>
+                                </div>
+                            </div>
+                            <div class="arch-connector">↕ REST API</div>
+                            <div class="arch-layer">
+                                <span class="arch-label">API Layer</span>
+                                <div class="arch-components">
+                                    <span class="arch-chip">FastAPI</span>
+                                    <span class="arch-chip">Pydantic</span>
+                                    <span class="arch-chip">CORS</span>
+                                </div>
+                            </div>
+                            <div class="arch-connector">↕</div>
+                            <div class="arch-layer">
+                                <span class="arch-label">Agent Layer</span>
+                                <div class="arch-components">
+                                    <span class="arch-chip highlight">LangGraph</span>
+                                    <span class="arch-chip">State Machine</span>
+                                    <span class="arch-chip">Self-Critique</span>
+                                </div>
+                            </div>
+                            <div class="arch-connector">↕</div>
+                            <div class="arch-layer">
+                                <span class="arch-label">Context Engine</span>
+                                <div class="arch-components">
+                                    <span class="arch-chip highlight">Reconstruction</span>
+                                    <span class="arch-chip">Compression</span>
+                                    <span class="arch-chip">Prompt Assembly</span>
+                                </div>
+                            </div>
+                            <div class="arch-connector">↕</div>
+                            <div class="arch-layer">
+                                <span class="arch-label">Retrieval Engine</span>
+                                <div class="arch-components">
+                                    <span class="arch-chip">BM25</span>
+                                    <span class="arch-chip">FAISS</span>
+                                    <span class="arch-chip highlight">Cross-Encoder</span>
+                                    <span class="arch-chip">RRF</span>
+                                </div>
+                            </div>
+                            <div class="arch-connector">↕</div>
+                            <div class="arch-layer">
+                                <span class="arch-label">LLM + Verification</span>
+                                <div class="arch-components">
+                                    <span class="arch-chip highlight">Gemini 2.5</span>
+                                    <span class="arch-chip">Hallucination Check</span>
+                                    <span class="arch-chip">Schema Validation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/app/app.js"></script>
+</body>
+</html>
