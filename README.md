@@ -78,6 +78,7 @@ Structured JSON Response
 | Verification | Deterministic validation of assessment names, URLs and test types |
 
 ---
+# Screenshots
 
 # Retrieval Pipeline
 
