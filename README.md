@@ -36,6 +36,9 @@ The project was designed around the official SHL evaluation criteria including:
 - Premium interactive web interface
 
 ---
+## Screenshots
+<img width="1892" height="790" alt="Screenshot 2026-07-01 232525" src="https://github.com/user-attachments/assets/945eb602-a142-445e-9456-ecf332b56d72" />
+
 
 # Architecture
 
